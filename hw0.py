@@ -81,32 +81,30 @@ def and_search(inverseIndex , query : list[str]):
 
 #Decending order
 def most_similar(inverseIndex , query : list[str]):
-    #dictionary[word, list[{doc # : # of occurances}] ]
-    #dict[str, list[{int : int}] ]
+    #dictionary[ word, {doc # : # of occurances} ]
+    #dict[str, {int : int} ]
     mapping = dict()
 
     folder.seek(0)
     stories = folder.readlines()
 
     for item in query:
+        #get document numbers where query item is found
         doc_numbers = inverseIndex[item]
+
         for doc_num in doc_numbers:
             line = stories[doc_num].split(' ')
-            for word in line:
-                    # if word not in mapping:
-                    #     mapping[word] = [{doc_num : 1}]
-                    # else:
-                    #     #bug below here maybe
-                    #     #might have to go through each list and check doc nums in the list
-                    #     li = mapping[word]
-                    #     similarity = li[len(li) - 1]
 
-                    #     if doc_num in similarity:
-                    #         mapping[word] = [{doc_num : similarity[doc_num] + 1}]
-                    #     else:
-                    #         li = mapping[word]
-                    #         li.append({doc_num : 1})
-                    #         mapping[word] = li
+            for word in line:
+                    if word not in mapping:
+                        mapping[word] = {doc_num : 1}
+                    else: #if the word is in mapping
+                        if doc_num not in mapping[word]:
+                            mapping[word].update({doc_num : 1})
+                        else:
+                            similarity = mapping[word]
+                            similarity[doc_num] = similarity[doc_num] + 1
+                            mapping[word] = similarity
 
 
         i = 2
