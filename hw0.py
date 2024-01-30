@@ -96,7 +96,7 @@ def most_similar(inverseIndex , query : list[str]):
             line = stories[doc_num].split(' ')
 
             for word in line:
-                    if word in line: #might be redundant
+                    # if word in line: #might be redundant
                         if word == item:
                             if word not in mapping:
                                 mapping[word] = {doc_num : 1}
