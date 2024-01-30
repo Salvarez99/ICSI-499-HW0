@@ -48,7 +48,7 @@ def make_inverse_index(strlist : list[str]) :
             else:
                 inverse_index[word] = {documentNumber}
 
-    # print(inverse_index)
+    print(inverse_index)
     return inverse_index
 
 #Can contain atleast one word from the query
@@ -96,20 +96,17 @@ def most_similar(inverseIndex , query : list[str]):
             line = stories[doc_num].split(' ')
 
             for word in line:
-                    if word not in mapping:
-                        mapping[word] = {doc_num : 1}
-                    else: #if the word is in mapping
-                        if doc_num not in mapping[word]:
-                            mapping[word].update({doc_num : 1})
-                        else:
-                            similarity = mapping[word]
-                            similarity[doc_num] = similarity[doc_num] + 1
-                            mapping[word] = similarity
-
-
-        i = 2
-
-
+                    if word in line: #might be redundant
+                        if word == item:
+                            if word not in mapping:
+                                mapping[word] = {doc_num : 1}
+                            else: #if the word is in mapping
+                                if doc_num not in mapping[word]:
+                                    mapping[word].update({doc_num : 1})
+                                else:
+                                    similarity = mapping[word]
+                                    similarity[doc_num] = similarity[doc_num] + 1
+                                    mapping[word] = similarity
 
     pass
 
@@ -152,4 +149,4 @@ if __name__ == '__main__':
         L2 = and_search(inverse_index, query = ['Eddie', 'Murphy', 'has', 'been', 'telling', 'interviewers'])
         print(L2)
 
-        most_similar(inverse_index, 'A')
+        most_similar(inverse_index, ['straight-A', 'A', 'World'])
