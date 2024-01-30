@@ -48,7 +48,7 @@ def make_inverse_index(strlist : list[str]) :
             else:
                 inverse_index[word] = {documentNumber}
 
-    print(inverse_index)
+    # print(inverse_index)
     return inverse_index
 
 #Can contain atleast one word from the query
@@ -84,6 +84,8 @@ def most_similar(inverseIndex , query : list[str]):
     #dictionary[ word, {doc # : # of occurances} ]
     #dict[str, {int : int} ]
     mapping = dict()
+    sim_dict = dict()
+    # indices = []
 
     folder.seek(0)
     stories = folder.readlines()
@@ -108,7 +110,19 @@ def most_similar(inverseIndex , query : list[str]):
                                     similarity[doc_num] = similarity[doc_num] + 1
                                     mapping[word] = similarity
 
-    pass
+    for _ , similarity in mapping.items():
+        for doc_num, score in similarity.items():
+            if doc_num not in sim_dict:
+                sim_dict[doc_num] = score
+            else:
+                sim_dict.update({doc_num : sim_dict[doc_num] + score})
+    
+    sim_dict = sorted(sim_dict.items(), key = lambda x: x[1], reverse=True)
+    return sim_dict
+    # for doc_num, _ in sim_dict:
+    #     indices.append(doc_num)
+
+    # return indices
 
 if __name__ == '__main__':
     test_print()
@@ -144,9 +158,10 @@ if __name__ == '__main__':
 
 
         L1 = or_search(inverse_index, query = ['Eddie'])
-        print(L1)
+        print(f"or_search results: {L1}")
 
         L2 = and_search(inverse_index, query = ['Eddie', 'Murphy', 'has', 'been', 'telling', 'interviewers'])
-        print(L2)
+        print(f"and_search results: {L2}")
 
-        most_similar(inverse_index, ['straight-A', 'A', 'World'])
+        L3 = most_similar(inverse_index, ['straight-A', 'survived', 'facts'])
+        print(f"Most similar documents: {L3}")
