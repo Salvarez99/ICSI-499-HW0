@@ -93,20 +93,20 @@ def most_similar(inverseIndex , query : list[str]):
         for doc_num in doc_numbers:
             line = stories[doc_num].split(' ')
             for word in line:
-                    if word not in mapping:
-                        mapping[word] = [{doc_num : 1}]
-                    else:
-                        #bug below here maybe
-                        #might have to go through each list and check doc nums in the list
-                        li = mapping[word]
-                        similarity = li[len(li) - 1]
+                    # if word not in mapping:
+                    #     mapping[word] = [{doc_num : 1}]
+                    # else:
+                    #     #bug below here maybe
+                    #     #might have to go through each list and check doc nums in the list
+                    #     li = mapping[word]
+                    #     similarity = li[len(li) - 1]
 
-                        if doc_num in similarity:
-                            mapping[word] = [{doc_num : similarity[doc_num] + 1}]
-                        else:
-                            li = mapping[word]
-                            li.append({doc_num : 1})
-                            mapping[word] = li
+                    #     if doc_num in similarity:
+                    #         mapping[word] = [{doc_num : similarity[doc_num] + 1}]
+                    #     else:
+                    #         li = mapping[word]
+                    #         li.append({doc_num : 1})
+                    #         mapping[word] = li
 
 
         i = 2
