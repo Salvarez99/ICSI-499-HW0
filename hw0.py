@@ -81,39 +81,48 @@ def and_search(inverseIndex , query : list[str]):
 
 #Decending order
 def most_similar(inverseIndex , query : list[str]):
-    #dictionary[word, list[{doc # : # of occurances}] ]
-    #dict[str, list[{int : int}] ]
+    #dictionary[ word, {doc # : # of occurances} ]
+    #dict[str, {int : int} ]
     mapping = dict()
+    sim_dict = dict()
+    # indices = []
 
     folder.seek(0)
     stories = folder.readlines()
 
     for item in query:
+        #get document numbers where query item is found
         doc_numbers = inverseIndex[item]
+
         for doc_num in doc_numbers:
             line = stories[doc_num].split(' ')
+
             for word in line:
-                    if word not in mapping:
-                        mapping[word] = [{doc_num : 1}]
-                    else:
-                        #bug below here maybe
-                        #might have to go through each list and check doc nums in the list
-                        li = mapping[word]
-                        similarity = li[len(li) - 1]
+                    # if word in line: #might be redundant
+                        if word == item:
+                            if word not in mapping:
+                                mapping[word] = {doc_num : 1}
+                            else: #if the word is in mapping
+                                if doc_num not in mapping[word]:
+                                    mapping[word].update({doc_num : 1})
+                                else:
+                                    similarity = mapping[word]
+                                    similarity[doc_num] = similarity[doc_num] + 1
+                                    mapping[word] = similarity
 
-                        if doc_num in similarity:
-                            mapping[word] = [{doc_num : similarity[doc_num] + 1}]
-                        else:
-                            li = mapping[word]
-                            li.append({doc_num : 1})
-                            mapping[word] = li
+    for _ , similarity in mapping.items():
+        for doc_num, score in similarity.items():
+            if doc_num not in sim_dict:
+                sim_dict[doc_num] = score
+            else:
+                sim_dict.update({doc_num : sim_dict[doc_num] + score})
+    
+    sim_dict = sorted(sim_dict.items(), key = lambda x: x[1], reverse=True)
+    return sim_dict
+    # for doc_num, _ in sim_dict:
+    #     indices.append(doc_num)
 
-
-        i = 2
-
-
-
-    pass
+    # return indices
 
 if __name__ == '__main__':
     test_print()
@@ -149,9 +158,10 @@ if __name__ == '__main__':
 
 
         L1 = or_search(inverse_index, query = ['Eddie'])
-        print(L1)
+        print(f"or_search results: {L1}")
 
         L2 = and_search(inverse_index, query = ['Eddie', 'Murphy', 'has', 'been', 'telling', 'interviewers'])
-        print(L2)
+        print(f"and_search results: {L2}")
 
-        most_similar(inverse_index, 'A')
+        L3 = most_similar(inverse_index, ['straight-A', 'survived', 'facts'])
+        print(f"Most similar documents: {L3}")
