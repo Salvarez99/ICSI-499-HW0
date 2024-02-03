@@ -1,6 +1,9 @@
 def test_print():
     print ("Hello world!")
 
+def list_set_length(x):
+    return len(x)
+
 def set_intersect(S : set, T: set) -> set:
     #For every x in set S if x is in T add to intersect set
     return {x for x in S if x in T}
@@ -130,8 +133,8 @@ if __name__ == '__main__':
     items_list = [2, 1, 2, 3, 4, 3, 2, 1]
     items_set = {2, 1, 2, 3, 4, 3, 2, 1}
 
-    print(f"item list len: {len(items_list)}\n")
-    print(f"item set len: {len(items_set)}\n")
+    print(f"item list len: {list_set_length(items_list)}")
+    print(f"item set len: {list_set_length(items_set)}\n")
 
     EX = {x*y for x in {1,2,3} for y in {2,3,4}}
     {2, 3, 4, 6, 8, 9, 12}
@@ -157,10 +160,10 @@ if __name__ == '__main__':
         query = ['WASHINGTON', 'A', 'former']
 
 
-        L1 = or_search(inverse_index, query = ['Eddie'])
+        L1 = or_search(inverse_index, query = ['other','june','all-you-can'])
         print(f"or_search results: {L1}")
 
-        L2 = and_search(inverse_index, query = ['Eddie', 'Murphy', 'has', 'been', 'telling', 'interviewers'])
+        L2 = and_search(inverse_index, query = ['other','june','all-you-can'])
         print(f"and_search results: {L2}")
 
         L3 = most_similar(inverse_index, ['straight-A', 'survived', 'facts'])
