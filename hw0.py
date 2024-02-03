@@ -44,7 +44,8 @@ def make_inverse_index(strlist : list[str]) :
     inverse_index = {}
 
     for documentNumber in range(len(strlist)):
-        words = strlist[documentNumber].split(' ')
+        #Added upper to words
+        words = list(map(str.upper,strlist[documentNumber].split(' ')))
         for word in words:
             if word in inverse_index:
                 inverse_index[word].add(documentNumber)
@@ -58,6 +59,9 @@ def make_inverse_index(strlist : list[str]) :
 def or_search(inverseIndex , query : list[str]):
     documentNumbers = set()
 
+    #Added upper to query
+    query = list(map(str.upper,query))
+
     for word in query:
         if word in inverseIndex:
             documentNumbers.update(inverseIndex[word])
@@ -66,6 +70,9 @@ def or_search(inverseIndex , query : list[str]):
 
 #Must contain all words in query
 def and_search(inverseIndex , query : list[str]):
+
+    #Added upper to query
+    query = list(map(str.upper,query))
     if len(query) == 1:
         return inverseIndex[query[0]]
     else:
@@ -90,6 +97,9 @@ def most_similar(inverseIndex , query : list[str]):
     sim_dict = dict()
     # indices = []
 
+    #Added upper to query
+    query = list(map(str.upper,query))
+    
     folder.seek(0)
     stories = folder.readlines()
 
@@ -98,7 +108,10 @@ def most_similar(inverseIndex , query : list[str]):
         doc_numbers = inverseIndex[item]
 
         for doc_num in doc_numbers:
-            line = stories[doc_num].split(' ')
+
+            #added upper to line
+            # line = stories[doc_num].split(' ')
+            line = list(map(str.upper,stories[doc_num].split(' ')))
 
             for word in line:
                     # if word in line: #might be redundant
@@ -157,14 +170,43 @@ if __name__ == '__main__':
     with open('stories.txt', 'r') as folder:
         inverse_index = make_inverse_index(folder.readlines())
 
-        query = ['WASHINGTON', 'A', 'former']
+        #Added query to check against hw expected output
+        query = ['other', 'june', 'all-you-can']
+        query = list(map(str.upper,query))
+
+        #Added check to see if inverse_index is the same as hw expected output
+        for item in query:
+            if item in inverse_index:
+                documentNumbers = inverse_index[item]
+                print(f"Documents ({item}) appears in: {sorted(documentNumbers)}")
+
+        print()
 
 
-        L1 = or_search(inverse_index, query = ['other','june','all-you-can'])
+        L1 = or_search(inverse_index, query)
         print(f"or_search results: {L1}")
 
-        L2 = and_search(inverse_index, query = ['other','june','all-you-can'])
+        L2 = and_search(inverse_index, query)
         print(f"and_search results: {L2}")
 
-        L3 = most_similar(inverse_index, ['straight-A', 'survived', 'facts'])
+
+        expectedOutput = [(13, 3), (1, 2), (35, 2), (44, 2), (0, 1), (2, 1), (3, 1), (4, 1), (6, 1), (7, 1), (8, 1), (11, 1), (12, 1), (14, 1), (15, 1), (16, 1), (17, 1), (19, 1), (20, 1), (22, 1), (24, 1), (25, 1), (26, 1), (29, 1), (30, 1), (31, 1), (32, 1), (33, 1), (34, 1), (39, 1), (40, 1), (42, 1), (46, 1)]
+        L3 = most_similar(inverse_index, query)
         print(f"Most similar documents: {L3}")
+
+        #Checking to see if my output is the same as expected output
+        print(f"Size of expectedOutput: {len(expectedOutput)}")
+        correct = 0
+        for item in L3:
+            if item in expectedOutput:
+                print(f"{item} : {expectedOutput}")
+                correct += 1
+        
+        if correct == len(expectedOutput):
+            print(f"Correct: {correct}")
+            print("True")
+
+        else: 
+            print(f"Correct: {correct}")
+            print("False")
+
